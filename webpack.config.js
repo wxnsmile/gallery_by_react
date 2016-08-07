@@ -15,6 +15,7 @@ if (args._.length > 0 && args._.indexOf('start') !== -1) {
 } else {
   env = 'dev';
 }
+console.log("王小宁"+JSON.stringify(args)+"好"+env);
 process.env.REACT_WEBPACK_ENV = env;
 
 /**

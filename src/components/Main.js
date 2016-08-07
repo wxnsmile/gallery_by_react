@@ -1,5 +1,5 @@
 require('normalize.css/normalize.css');
-require('styles/App.css');
+require('../styles/App.scss');//引入scss，需要添加node-sass模块
 var React = require('react');
 var ReactDOM = require('react-dom');
 // import React from 'react';
@@ -34,14 +34,14 @@ var ImgFigure = React.createClass({
     }
    //如果props中定义了旋转角度并且不为0，则使用
     if(this.props.arrange.rotate){
-      styleObj['transform'] = 'rotate('+this.props.arrange.rotate+'deg)';
-     // ['-moz-','-webkit-','-ms-',''].forEach(function(value){
-     //  styleObj[value + 'transform'] = 'rotate('+this.props.arrange.rotate+'deg)';
-     // }.bind(this))
+      // styleObj['transform'] = 'rotate('+this.props.arrange.rotate+'deg)';
+     ['Moz','Webkit','ms',''].forEach(function(value){
+      styleObj[value + 'transform'] = 'rotate('+this.props.arrange.rotate+'deg)';
+     }.bind(this))
     }
     if(this.props.arrange.iscenter){
       styleObj.zIndex = 11;
-    } 
+    }
     var imgFigureClassName = 'img-figure';
     imgFigureClassName += this.props.arrange.inverse ? ' is-inverse' : '';
     return (
@@ -56,6 +56,30 @@ var ImgFigure = React.createClass({
 				</figure>
 			);
 	}
+})
+
+var ControllerUnit = React.createClass({
+  handleClick: function(e){
+    if(this.props.arrange.iscenter){
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
+    e.stopPropagation();
+    e.preventDefault();
+  },
+  render: function(){
+    var controllerUnitClassName = 'controller-unit';
+    if(this.props.arrange.iscenter){
+      controllerUnitClassName += ' is-center';
+      if(this.props.arrange.inverse){
+        controllerUnitClassName += ' is-inverse';
+      }
+    } 
+    return (
+        <span className={controllerUnitClassName} onClick={this.handleClick}></span>
+      )
+  }
 })
 /**
  * [getRangeRandom 获取区间内的一个随机值]
@@ -108,7 +132,7 @@ var PicComponent = React.createClass ({
   	vPosRangeTopY = vPosRange.topY,
 
   	imgsArrangeTopArr = [],
-  	topImgNum = Math.ceil(Math.random() * 2), //顶部图片取一个或者不取
+  	topImgNum = Math.floor(Math.random() * 2), //顶部图片取一个或者不取
   	topImgSpliceIndex = 0,
   	//布局位于中间的图片,中间图片不旋转
   	imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex,1);
@@ -245,7 +269,8 @@ var PicComponent = React.createClass ({
       }
       //必须加key
       imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
-		}.bind(this));
+		  controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+    }.bind(this));
   	return (
   		<section className="stage" ref="stage">
   			<section className="img-sec">

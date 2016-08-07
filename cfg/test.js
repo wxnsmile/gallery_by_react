@@ -22,8 +22,12 @@ module.exports = {
     ],
     loaders: [
       {
-        test: /\.(png|jpg|gif|woff|woff2|css|sass|scss|less|styl)$/,
+        test: /\.(png|jpg|gif|woff|woff2|css|sass|scss|less|styl|eot|ttf|svg)$/,
         loader: 'null-loader'
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass']
       },
       {
         test: /\.(js|jsx)$/,
